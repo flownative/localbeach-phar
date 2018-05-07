@@ -1,0 +1,15 @@
+services:
+  - docker:dind
+
+stages:
+- build
+
+build:
+  stage: build
+  image: eu.gcr.io/flownative-beach/beach-phpfpm-did:7.2.3-1
+  variables:
+    DOCKER_HOST: 'tcp://localhost:2375'
+    GIT_SSH_COMMAND: 'ssh -o PreferredAuthentications=publickey -i ~/.ssh/deploymentkey_rsa'
+  script:
+    - mkdir -p ~/.ssh && ssh-keyscan -t rsa -p 2222 git.flownative.com >> ~/.ssh/known_hosts && echo "$CI_DEPLOYMENT_PRIVATE_KEY" > ~/.ssh/deploymentkey_rsa && chmod 0600 ~/.ssh/deploymentkey_rsa
+    - composer --no-dev -o -v --no-progress --ignore-platform-reqs install
