@@ -1,0 +1,13 @@
+application:
+  name: 'Beach CLI'
+  version: '1.x-dev'
+  executable: 'beach'
+  package_name: 'flownative/beach-cli'
+  installer_url: 'https://beach.flownative.com/cli/installer'
+  manifest_url: 'https://beach.flownative.com/cli/manifest.json'
+  user_config_dir: '.flownative/beach'
+  user_state_file: '.flownative/beach/state.json'
+  env_prefix: 'FLOWNATIVE_BEACH_CLI_'
+  tmp_sub_dir: 'beach-cli-tmp'
+  github_repo: 'flownative/beach-cli'
+  release_branch: 'master'

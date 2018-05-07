@@ -1,0 +1,17 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__.'/../vendor/autoload.php';
+
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Console\Application;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+
+$container = new ContainerBuilder();
+$loader = new YamlFileLoader($container, new FileLocator());
+$loader->load(CLI_ROOT . '/config/services.yaml');
+
+$application = new Application('Beach CLI', '1.x-dev');
+$application->add($container->get('hello'));
+$application->run();
