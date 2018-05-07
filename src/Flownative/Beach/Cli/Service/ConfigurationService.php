@@ -4,7 +4,7 @@ namespace Flownative\Beach\Cli\Service;
 use Neos\Utility\Arrays;
 use Symfony\Component\Yaml\Yaml;
 
-final class Configuration
+final class ConfigurationService
 {
     /**
      * @var array

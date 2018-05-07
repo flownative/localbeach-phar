@@ -1,26 +1,11 @@
 <?php
 namespace Flownative\Beach\Cli\Command;
 
-use Flownative\Beach\Cli\Service\Configuration;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class HelloCommand extends CommandBase
+class HelloCommand extends BaseCommand
 {
-    /**
-     * @var Configuration
-     */
-    protected $cliConfig;
-
-    /**
-     * @required
-     * @param Configuration $cliConfig
-     */
-    public function setConfig(Configuration $cliConfig)
-    {
-        $this->cliConfig = $cliConfig;
-    }
-
     /**
      * @return void
      */
@@ -39,6 +24,6 @@ class HelloCommand extends CommandBase
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln('Hello World');
-        $output->writeln($this->cliConfig->get('application.name'));
+        $output->writeln($this->configurationService->get('application.name'));
     }
 }
