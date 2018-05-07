@@ -10,6 +10,7 @@ use Neos\Utility\Files;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 class DownloadCommand extends BaseCommand
 {
@@ -34,11 +35,9 @@ class DownloadCommand extends BaseCommand
     {
         $this
             ->setName('resource:download')
-            ->setDescription('Preliminary solution for downloading resources (assets) from Beach to a local Flow or Neos')
-            ->addOption('bucket', 'b', InputOption::VALUE_REQUIRED, 'Name of the Google Cloud Storage bucket')
-            ->addOption('clientEmail', 'c', InputOption::VALUE_REQUIRED, 'Client email address of the Google Cloud Storage service account')
-            ->addOption('privateKey', 'p', InputOption::VALUE_REQUIRED, 'Base64-encoded private key of the Google Cloud Storage service account')
-            ->addOption('localFlowRootPath', 'l', InputOption::VALUE_REQUIRED, 'Path leading to the local Flow or Neos root path');
+            ->setDescription('Download resources (assets) from Beach to a local Flow or Neos installation')
+            ->setHelp('<info>Lorem ipsum dolor sit amet</info>, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.')
+            ->addOption('instance', 'i', InputOption::VALUE_REQUIRED, 'Instance identifier, e.g. "instance-123abcde-456-abcd-1234-abcdef012345"');
     }
 
     /**
@@ -49,23 +48,43 @@ class DownloadCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): ?int
     {
-        $localFlowRootPath = $input->getOption('localFlowRootPath');
-        if (!file_exists($localFlowRootPath)) {
-            $this->errorOutput->writeln('The given local Flow root path does not exist.');
-            return 1;
-        }
-        $localPersistentPath = rtrim($localFlowRootPath, '/') . '/Data/Persistent/';
+        $io = new SymfonyStyle($input, $output);
+
+        $localPersistentPath = rtrim(getcwd(), '/') . '/Data/Persistent/';
         if (!file_exists($localPersistentPath)) {
-            $this->errorOutput->writeln(sprintf('The path %s does not exist.', $localPersistentPath));
-            return 2;
+            $io->error(sprintf('The path %s does not exist.', $localPersistentPath));
+            $io->text('Please run this command from the root directory of your Flow or Neos installation.');
+            return 1;
         }
         $localResourcesPath = $localPersistentPath . 'Resources/';
         if (!file_exists($localResourcesPath)) {
             mkdir($localResourcesPath);
         }
 
-        $bucketName = $input->getOption('bucket');
-        $privateKey = json_decode(base64_decode($input->getOption('privateKey')), true);
+        $instanceIdentifier = $input->getOption('instance');
+        if (preg_match('/^instance\-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/', $instanceIdentifier) === 0) {
+            $io->error(sprintf('The instance identifier is not valid.', $instanceIdentifier));
+            return 1;
+        }
+
+        $io->text('Retrieving cloud storage access data from instance ...');
+        $io->newLine();
+
+        $environmentVariables = [];
+        exec('ssh -J beach@ssh.flownative.cloud beach@' . $instanceIdentifier . ' /bin/bash -c "env | grep BEACH_GOOGLE_CLOUD_STORAGE_"', $environmentLines);
+
+        foreach ($environmentLines as $line) {
+            list($key, $value) = explode("=", $line);
+            $environmentVariables[$key] = $value;
+        }
+
+        if (!isset($environmentVariables['BEACH_GOOGLE_CLOUD_STORAGE_STORAGE_BUCKET'])) {
+            $io->error('Could not retrieve cloud storage information from instance.');
+            return 1;
+        }
+
+        $bucketName = $environmentVariables['BEACH_GOOGLE_CLOUD_STORAGE_STORAGE_BUCKET'];
+        $privateKey = json_decode(base64_decode($environmentVariables['BEACH_GOOGLE_CLOUD_STORAGE_SERVICE_ACCOUNT_PRIVATE_KEY']), true);
 
         $googleCloud = new ServiceBuilder([
             'keyFile' => $privateKey
@@ -74,10 +93,17 @@ class DownloadCommand extends BaseCommand
         $googleCloudStorage = $googleCloud->storage();
         $bucket = $googleCloudStorage->bucket($bucketName);
 
+        $io->text([
+            "Downloading resources from bucket",
+            "<info>$bucketName</info>",
+            "to local directory",
+            "<info>$localResourcesPath</info>"
+        ]);
+        $io->newLine();
 
-        $output->writeln(sprintf("Downloading resources from bucket\n   %s\nto directory\n   %s ...", $bucketName, $localResourcesPath));
-
+        $io->progressStart();
         foreach ($bucket->objects() as $storageObject) {
+            $io->progressAdvance();
             /** @var StorageObject $storageObject */
             $targetPathAndFilename = $localResourcesPath . $this->getRelativePathAndFilenameByHash($storageObject->name());
             if (!file_exists(dirname($targetPathAndFilename))) {
@@ -87,8 +113,9 @@ class DownloadCommand extends BaseCommand
                 $storageObject->downloadToFile($targetPathAndFilename);
             }
         }
+        $io->progressFinish();
 
-        $output->writeln('Done.');
+        $io->success('Done.');
         return null;
     }
 
@@ -98,7 +125,7 @@ class DownloadCommand extends BaseCommand
      * @param string $sha1Hash The SHA1 hash identifying the stored resource
      * @return string The path and filename, for example "c/8/2/8/c828d0f88ce197be1aff7cc2e5e86b1244241ac6"
      */
-    protected function getRelativePathAndFilenameByHash(string $sha1Hash): string
+    private function getRelativePathAndFilenameByHash(string $sha1Hash): string
     {
         return $sha1Hash[0] . '/' . $sha1Hash[1] . '/' . $sha1Hash[2] . '/' . $sha1Hash[3] . '/' . $sha1Hash;
     }
