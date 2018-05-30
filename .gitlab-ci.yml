@@ -17,7 +17,7 @@ build:
     - echo "phar.readonly = Off" > /usr/local/etc/php/conf.d/phar.ini
     - composer --no-dev -o -v --no-progress --ignore-platform-reqs install
     - export APP_VERSION=latest
-    - envsubst < constants.php > constants.php
+    - envsubst < constants.php > constants-substituted.php && rm constants.php && mv constants-substituted.php constants.php
     - ./box.phar build
     - gcloud auth activate-service-account --key-file ~/google-service-account.json
     - gsutil cp beach.phar gs://cli-tool.beach.flownative.cloud/beach-latest.phar
@@ -34,7 +34,7 @@ build-tagged:
     - echo "phar.readonly = Off" > /usr/local/etc/php/conf.d/phar.ini
     - composer --no-dev -o -v --no-progress --ignore-platform-reqs install
     - export APP_VERSION=${CI_COMMIT_TAG}
-    - envsubst < constants.php > constants.php
+    - envsubst < constants.php > constants-substituted.php && rm constants.php && mv constants-substituted.php constants.php
     - ./box.phar build
     - gcloud auth activate-service-account --key-file ~/google-service-account.json
     - gsutil cp beach.phar gs://cli-tool.beach.flownative.cloud/beach-${CI_COMMIT_TAG}.phar
