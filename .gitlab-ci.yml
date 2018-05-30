@@ -3,12 +3,12 @@ services:
 
 stages:
 - build
+- deploy
 
 build:
   stage: build
   image: eu.gcr.io/flownative-beach/beach-phpfpm-did:7.2.5-2
   variables:
-    DOCKER_HOST: 'tcp://localhost:2375'
     GIT_SSH_COMMAND: 'ssh -o PreferredAuthentications=publickey -i ~/.ssh/deploymentkey_rsa'
   script:
     - mkdir -p ~/.ssh && ssh-keyscan -t rsa -p 2222 git.flownative.com >> ~/.ssh/known_hosts && echo "$CI_DEPLOYMENT_PRIVATE_KEY" > ~/.ssh/deploymentkey_rsa && chmod 0600 ~/.ssh/deploymentkey_rsa
@@ -20,23 +20,13 @@ build:
     - envsubst < constants.php > constants-substituted.php && rm constants.php && mv constants-substituted.php constants.php
     - ./box.phar build
     - gcloud auth activate-service-account --key-file ~/google-service-account.json
-    - gsutil cp beach.phar gs://cli-tool.beach.flownative.cloud/beach-latest.phar
-build-tagged:
-  stage: build
-  image: eu.gcr.io/flownative-beach/beach-phpfpm-did:7.2.5-2
-  variables:
-    DOCKER_HOST: 'tcp://localhost:2375'
-    GIT_SSH_COMMAND: 'ssh -o PreferredAuthentications=publickey -i ~/.ssh/deploymentkey_rsa'
-  script:
-    - mkdir -p ~/.ssh && ssh-keyscan -t rsa -p 2222 git.flownative.com >> ~/.ssh/known_hosts && echo "$CI_DEPLOYMENT_PRIVATE_KEY" > ~/.ssh/deploymentkey_rsa && chmod 0600 ~/.ssh/deploymentkey_rsa
-    - echo "$CI_BUILDER_SERVICE_ACCOUNT" > ~/google-service-account.json
-    - curl -SL "https://github.com/box-project/box2/releases/download/2.7.5/box-2.7.5.phar" -o box.phar && chmod 0775 box.phar
-    - echo "phar.readonly = Off" > /usr/local/etc/php/conf.d/phar.ini
-    - composer --no-dev -o -v --no-progress --ignore-platform-reqs install
-    - export APP_VERSION=${CI_COMMIT_TAG}
-    - envsubst < constants.php > constants-substituted.php && rm constants.php && mv constants-substituted.php constants.php
-    - ./box.phar build
-    - gcloud auth activate-service-account --key-file ~/google-service-account.json
     - gsutil cp beach.phar gs://cli-tool.beach.flownative.cloud/beach-${CI_COMMIT_TAG}.phar
+
+deploy:
+  stage: deploy
+  image: eu.gcr.io/flownative-beach/beach-phpfpm-did:7.2.5-2
+  script:
+    - gcloud auth activate-service-account --key-file ~/google-service-account.json
+    - gsutil cp gs://cli-tool.beach.flownative.cloud/beach-${CI_COMMIT_TAG}.phar gs://cli-tool.beach.flownative.cloud/beach.phar
   only:
     - tags
