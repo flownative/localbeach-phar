@@ -6,7 +6,7 @@ stages:
 
 build:
   stage: build
-  image: eu.gcr.io/flownative-beach/beach-phpfpm-did:7.2.3-1
+  image: eu.gcr.io/flownative-beach/beach-phpfpm-did:7.2.5-2
   variables:
     DOCKER_HOST: 'tcp://localhost:2375'
     GIT_SSH_COMMAND: 'ssh -o PreferredAuthentications=publickey -i ~/.ssh/deploymentkey_rsa'
@@ -16,3 +16,4 @@ build:
     - echo "phar.readonly = Off" > /usr/local/etc/php/conf.d/phar.ini
     - composer --no-dev -o -v --no-progress --ignore-platform-reqs install
     - ./box.phar build
+    - gsutil cp beach.phar gs://cli-tool.beach.flownative.cloud/beach-latest.phar
