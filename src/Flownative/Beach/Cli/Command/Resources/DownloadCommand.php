@@ -36,7 +36,21 @@ class DownloadCommand extends BaseCommand
         $this
             ->setName('resource:download')
             ->setDescription('Download resources (assets) from Beach to a local Flow or Neos installation')
-            ->setHelp('<info>Lorem ipsum dolor sit amet</info>, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.')
+            ->setHelp(
+"The <info>resource:download</info> command downloads Flow resources from a Beach instance to
+a local Flow or Neos project.
+
+Resource data (that is, the actual files containing binary data) will be downloaded to the
+<info>Data/Persistent/Resources</info> directory.
+
+It is your responsibility to make sure that the database content is matching this data. Be
+aware that Neos and Flow keep track of existing resources by a database table.
+If resources are not registered in there, Flow does not know about them.
+
+Use this command by switching to the root directory of your Flow or Neos installation and
+then running <info>resource:download</info> and specify the instance identifier.
+"
+            )
             ->addOption('instance', 'i', InputOption::VALUE_REQUIRED, 'Instance identifier, e.g. "instance-123abcde-456-abcd-1234-abcdef012345"');
     }
 
