@@ -20,7 +20,7 @@ build:
     - envsubst < constants.php > constants-substituted.php && rm constants.php && mv constants-substituted.php constants.php
     - ./box.phar build
     - gcloud auth activate-service-account --key-file ~/google-service-account.json
-    - gsutil cp beach.phar gs://cli-tool.beach.flownative.cloud/beach-${CI_COMMIT_TAG}.phar
+    - gsutil cp beach.phar gs://cli-tool.beach.flownative.cloud/beach-${CI_COMMIT_REF_SLUG}.phar
 
 deploy:
   stage: deploy
