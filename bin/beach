@@ -12,7 +12,7 @@ $container = new ContainerBuilder();
 $loader = new YamlFileLoader($container, new FileLocator());
 $loader->load(CLI_ROOT . '/config/services.yaml');
 
-$application = new Application('Beach CLI', '0.x-dev');
+$application = new Application('Beach CLI', APP_VERSION);
 //$application->add($container->get('hello'));
 $application->add($container->get('resources_download'));
 $application->run();
