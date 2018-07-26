@@ -1,0 +1,25 @@
+#
+# Settings used for development in Local Beach
+#
+
+Neos:
+  Flow:
+    persistence:
+      backendOptions:
+        host: '%env:BEACH_DATABASE_HOST%'
+        dbname: '%env:BEACH_DATABASE_NAME%'
+        user: '%env:BEACH_DATABASE_USERNAME%'
+        password: '%env:BEACH_DATABASE_PASSWORD%'
+
+    resource:
+      targets:
+        localWebDirectoryStaticResourcesTarget:
+          targetOptions:
+            relativeSymlinks: true
+
+        localWebDirectoryPersistentResourcesTarget:
+          targetOptions:
+            relativeSymlinks: true
+
+    http:
+      baseUri: 'http://localhost:%env:BEACH_WEBSERVER_PORT%/'

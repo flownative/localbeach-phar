@@ -15,7 +15,7 @@ final class ConfigurationService
      */
     public function __construct()
     {
-        $this->settings = Yaml::parse(file_get_contents(CLI_ROOT .'/config/settings.yaml'));
+        $this->settings = Yaml::parse(file_get_contents(CLI_ROOT_PATH .'config/settings.yaml'));
     }
 
     /**

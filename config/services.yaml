@@ -4,11 +4,6 @@ services:
       autowire: false
       autoconfigure: false
 
-    hello:
-      class: 'Flownative\Beach\Cli\Command\HelloCommand'
-      calls:
-        - [setConfig, ['@configuration']]
-
     configuration:
       class:     'Flownative\Beach\Cli\Service\ConfigurationService'
 
@@ -16,3 +11,6 @@ services:
       class: 'Flownative\Beach\Cli\Command\Resources\DownloadCommand'
       calls:
         - [setConfig, ['@configuration']]
+
+    projects_init:
+      class: 'Flownative\Beach\Cli\Command\Projects\InitCommand'
