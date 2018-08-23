@@ -3,9 +3,11 @@
     "directories": [
         "bin",
         "config",
+        "resources",
         "src"
     ],
     "files": [
+        "resources/.env",
         "LICENSE",
         "constants.php"
     ],
