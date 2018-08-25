@@ -25,7 +25,7 @@ local Flow or Neos project, so you can develop locally using the same Docker ima
 Nginx, PHP and Redis which later be used in the cloud.
 "
             )
-            ->addOption('projectName', 'p', InputOption::VALUE_REQUIRED, 'Project name. Use only characters, numbers and underscores, e.g. "my_new_website"')
+            ->addOption('projectName', 'p', InputOption::VALUE_REQUIRED, 'Project name. Must be DNS compatible - use only characters, numbers and hyphens, e.g. "my-new-website"')
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Force initialization. If set, any existing Docker Compose and Local Beach configuration will be overwritten')
             ->addOption('createDatabase', 'd', InputOption::VALUE_NONE, 'Create a new database on the Local Beach Maria DB server');
     }
