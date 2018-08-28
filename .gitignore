@@ -1,5 +1,7 @@
 /vendor
+build/box.phar
 beach.phar
+constants.php
 box.json
 private.key
 beach.phar.pubkey
