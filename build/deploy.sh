@@ -9,8 +9,9 @@ gsutil cp beach.phar gs://cli-tool.beach.flownative.cloud/beach.phar
 
 export SHA256_HASH=$(shasum --algorithm 256 beach.phar | awk '{print $1}')
 
+mkdir -p ~/.ssh && ssh-keyscan -t rsa -p 22 github.com >> ~/.ssh/known_hosts
 git clone git@github.com:flownative/homebrew-flownative.git
 envsubst < build/beach-cli.rb.tpl > homebrew-flownative/Formula/beach-cli.rb
 cd homebrew-flownative
-git commit -a -m "Update beach.phar to ${APP_VERSION}"
+git commit -a --author="GitLab CI <ops@flownative.com>" -m "Update beach.phar to ${APP_VERSION}"
 git push
