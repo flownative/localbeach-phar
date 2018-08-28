@@ -87,7 +87,7 @@ Nginx, PHP and Redis which later be used in the cloud.
         }
 
         $projectName = $input->getOption('projectName') ?: basename($projectBasePath);
-        $projectName = preg_replace('/[^a-zA-Z0-9_]/', '', $projectName);
+        $projectName = preg_replace('/[^a-zA-Z0-9-]/', '', $projectName);
 
         file_put_contents($projectBasePath . '.env', str_replace('${BEACH_PROJECT_NAME}', $projectName, file_get_contents(CLI_ROOT_PATH . 'resources/.env')));
 
