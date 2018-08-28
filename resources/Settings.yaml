@@ -20,6 +20,3 @@ Neos:
         localWebDirectoryPersistentResourcesTarget:
           targetOptions:
             relativeSymlinks: true
-
-    http:
-      baseUri: 'http://localhost:%env:BEACH_WEBSERVER_PORT%/'
