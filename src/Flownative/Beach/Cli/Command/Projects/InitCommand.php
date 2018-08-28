@@ -92,7 +92,7 @@ Nginx, PHP and Redis which later be used in the cloud.
         file_put_contents($projectBasePath . '.env', str_replace('${BEACH_PROJECT_NAME}', $projectName, file_get_contents(CLI_ROOT_PATH . 'resources/.env')));
 
         if ($input->getOption('createDatabase')) {
-            exec('docker exec local_beach_mariadb /bin/bash -c "echo \'CREATE DATABASE IF NOT EXISTS \`' . $projectName . '\`\' | mysql -u root --password=password"');
+            exec('docker exec local_beach_database /bin/bash -c "echo \'CREATE DATABASE IF NOT EXISTS \`' . $projectName . '\`\' | mysql -u root --password=password"');
         }
 
         $io->success('You are all set, now run docker-compose up to get started.');
