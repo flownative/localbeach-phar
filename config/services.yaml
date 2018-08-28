@@ -12,5 +12,5 @@ services:
       calls:
         - [setConfig, ['@configuration']]
 
-    projects_init:
-      class: 'Flownative\Beach\Cli\Command\Projects\InitCommand'
+    local_init:
+      class: 'Flownative\Beach\Cli\Command\Local\InitCommand'

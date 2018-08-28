@@ -1,5 +1,5 @@
 <?php
-namespace Flownative\Beach\Cli\Command\Projects;
+namespace Flownative\Beach\Cli\Command\Local;
 
 use Flownative\Beach\Cli\Command\BaseCommand;
 use Neos\Utility\Exception\FilesException;
@@ -17,10 +17,10 @@ class InitCommand extends BaseCommand
     protected function configure()
     {
         $this
-            ->setName('project:init')
+            ->setName('local:init')
             ->setDescription('Initialize a Flow distribution as a Local Beach project')
             ->setHelp(
-"The <info>project:init</info> command creates a Docker Compose configuration for a
+"The <info>local:init</info> command creates a Local Beach configuration for a
 local Flow or Neos project, so you can develop locally using the same Docker images for
 Nginx, PHP and Redis which later be used in the cloud.
 "
