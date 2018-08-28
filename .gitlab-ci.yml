@@ -21,7 +21,7 @@ deploy:
   stage: deploy
   image: eu.gcr.io/flownative-beach/beach-phpfpm-did:7.2.5-2
   variables:
-    GIT_SSH_COMMAND: 'ssh -o PreferredAuthentications=publickey -i ~/.ssh/deploymentkey_rsa'
+    GIT_SSH_COMMAND: 'ssh -o PreferredAuthentications=publickey -i ~/.ssh/deploymentkey_rsa -i ~/.ssh/github_deploymentkey_rsa'
   script:
     - build/deploy.sh
   only:
