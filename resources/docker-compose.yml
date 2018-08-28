@@ -53,6 +53,7 @@ services:
       - BEACH_REDIS_PORT=${BEACH_REDIS_PORT:-6380}
       - BEACH_REDIS_PASSWORD=${BEACH_REDIS_PASSWORD:-password}
       - BEACH_PHP_MEMORY_LIMIT=${BEACH_PHP_MEMORY_LIMIT:-750M}
+      - BEACH_SYNCD_ENABLE=true
 
   redis:
     image: ${BEACH_REDIS_IMAGE:-flownative/beach-redis}:${BEACH_REDIS_IMAGE_VERSION:-latest}
