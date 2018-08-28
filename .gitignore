@@ -2,6 +2,7 @@
 build/box.phar
 beach.phar
 constants.php
+/homebrew-flownative/
 box.json
 private.key
 beach.phar.pubkey
