@@ -11,6 +11,6 @@ class BeachCli < Formula
 
   def install
     bin.install "beach-${APP_VERSION}.phar" => "beach"
-    system "beach", "localbeach:prepare", "#{bin}/", "#{var}/localbeach"
+    system "./beach-${APP_VERSION}.phar", "localbeach:prepare", "#{bin}/", "#{var}/localbeach"
   end
 end
