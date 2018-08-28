@@ -14,5 +14,5 @@ $loader->load(CLI_ROOT_PATH . 'config/services.yaml');
 
 $application = new Application('Beach CLI', APP_VERSION);
 $application->add($container->get('resources_download'));
-$application->add($container->get('projects_init'));
+$application->add($container->get('local_init'));
 $application->run();
