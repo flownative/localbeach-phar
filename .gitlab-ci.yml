@@ -12,6 +12,10 @@ build:
     GIT_SSH_COMMAND: 'ssh -o PreferredAuthentications=publickey -i ~/.ssh/deploymentkey_rsa'
   script:
     - build/build.sh
+  artifacts:
+    paths:
+      - beach.phar
+    expire_in: '1 hour'
 
 deploy:
   stage: deploy
