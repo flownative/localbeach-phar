@@ -17,8 +17,6 @@ deploy:
   stage: deploy
   image: eu.gcr.io/flownative-beach/beach-phpfpm-did:7.2.5-2
   script:
-    - echo "$CI_BUILDER_SERVICE_ACCOUNT" > ~/google-service-account.json
-    - gcloud auth activate-service-account --key-file ~/google-service-account.json
-    - gsutil cp gs://cli-tool.beach.flownative.cloud/beach-${CI_COMMIT_REF_NAME}.phar gs://cli-tool.beach.flownative.cloud/beach.phar
+    - build/deploy.sh
   only:
     - tags
