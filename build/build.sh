@@ -12,4 +12,4 @@ composer --no-dev -o -v --no-progress --ignore-platform-reqs install
 
 envsubst < build/constants.php.tpl > constants.php
 php -d phar.readonly=0 build/box.phar build
-echo gsutil cp beach.phar gs://cli-tool.beach.flownative.cloud/beach-${APP_VERSION}.phar
+gsutil cp beach.phar gs://cli-tool.beach.flownative.cloud/beach-${APP_VERSION}.phar
