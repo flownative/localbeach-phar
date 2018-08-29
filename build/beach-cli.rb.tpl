@@ -7,10 +7,12 @@ class BeachCli < Formula
   url "https://storage.googleapis.com/cli-tool.beach.flownative.cloud/beach-${APP_VERSION}.phar"
   sha256 "${SHA256_HASH}"
 
+  head "https://storage.googleapis.com/cli-tool.beach.flownative.cloud/beach-master.phar"
+
   bottle :unneeded
 
   def install
+    system "php", buildpath/"beach-${APP_VERSION}.phar", "localbeach:prepare", "#{lib}/beach-cli/localbeach", "#{var}/beach-cli/localbeach"
     bin.install "beach-${APP_VERSION}.phar" => "beach"
-    system "./beach-${APP_VERSION}.phar", "localbeach:prepare", "#{bin}/", "#{var}/localbeach"
   end
 end
