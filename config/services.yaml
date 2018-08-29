@@ -23,3 +23,6 @@ services:
 
     localbeach_stop:
       class: 'Flownative\Beach\Cli\Command\LocalBeach\StopCommand'
+
+    localbeach_setup:
+      class: 'Flownative\Beach\Cli\Command\LocalBeach\SetupCommand'

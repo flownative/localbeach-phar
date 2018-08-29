@@ -18,4 +18,5 @@ $application->add($container->get('local_init'));
 $application->add($container->get('localbeach_prepare'));
 $application->add($container->get('localbeach_start'));
 $application->add($container->get('localbeach_stop'));
+$application->add($container->get('localbeach_setup'));
 $application->run();
