@@ -16,4 +16,6 @@ $application = new Application('Beach CLI', APP_VERSION);
 $application->add($container->get('resources_download'));
 $application->add($container->get('local_init'));
 $application->add($container->get('localbeach_prepare'));
+$application->add($container->get('localbeach_start'));
+$application->add($container->get('localbeach_stop'));
 $application->run();

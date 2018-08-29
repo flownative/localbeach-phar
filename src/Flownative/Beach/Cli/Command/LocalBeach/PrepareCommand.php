@@ -2,9 +2,6 @@
 namespace Flownative\Beach\Cli\Command\LocalBeach;
 
 use Flownative\Beach\Cli\Command\BaseCommand;
-use Flownative\Beach\Cli\Service\ConfigurationService;
-use Google\Cloud\Core\ServiceBuilder;
-use Google\Cloud\Storage\StorageObject;
 use Neos\Utility\Exception\FilesException;
 use Neos\Utility\Files;
 use Symfony\Component\Console\Input\InputArgument;

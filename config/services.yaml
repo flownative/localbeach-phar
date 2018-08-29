@@ -17,3 +17,9 @@ services:
 
     localbeach_prepare:
       class: 'Flownative\Beach\Cli\Command\LocalBeach\PrepareCommand'
+
+    localbeach_start:
+      class: 'Flownative\Beach\Cli\Command\LocalBeach\StartCommand'
+
+    localbeach_stop:
+      class: 'Flownative\Beach\Cli\Command\LocalBeach\StopCommand'
