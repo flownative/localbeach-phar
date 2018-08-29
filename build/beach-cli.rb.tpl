@@ -12,7 +12,7 @@ class BeachCli < Formula
   bottle :unneeded
 
   def install
-    system "php", buildpath/"beach-${APP_VERSION}.phar", "localbeach:prepare", "#{lib}/beach-cli/localbeach", "#{var}/beach-cli/localbeach"
+    system "php", buildpath/"beach-${APP_VERSION}.phar", "localbeach:prepare", "#{lib}/beach-cli/localbeach", "~/Library/Application Support/Flownative/Local Beach/MariaDB"
     bin.install "beach-${APP_VERSION}.phar" => "beach"
   end
 end
