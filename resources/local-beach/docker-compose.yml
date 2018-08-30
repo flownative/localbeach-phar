@@ -6,7 +6,7 @@ networks:
 
 services:
   nginx:
-    image: jwilder/nginx-proxy
+    image: flownative/localbeach-nginx-proxy:0.1.0
     container_name: local_beach_nginx
     networks:
       - local_beach
@@ -14,9 +14,6 @@ services:
       - "80:80"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./nginx/proxy.conf:/etc/nginx/proxy.conf:ro
-      - ./nginx/nginx.tmpl:/app/nginx.tmpl:ro
-      - ./nginx/error:/var/www/nginx-error:ro
     environment:
       - DEFAULT_HOST=hello.localbeach.net
   database:
