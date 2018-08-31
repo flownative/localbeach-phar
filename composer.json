@@ -14,7 +14,8 @@
         "neos/utility-arrays": "^5.0",
         "neos/utility-files": "^5.0",
         "google/cloud-storage": "^1.4",
-        "guzzlehttp/psr7": "^1.4"
+        "guzzlehttp/psr7": "^1.4",
+        "vlucas/phpdotenv": "^2.5"
     },
     "autoload": {
         "files": ["constants.php"],
