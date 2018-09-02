@@ -32,6 +32,7 @@ services:
     volumes:
       - ./Data/Persistent:/application/Data/Persistent:delegated
       - ./Data/Logs:/application/Data/Logs:delegated
+      - ./Data/DoctrineMigrations:/application/Data/DoctrineMigrations
       - .:/application-on-host:delegated
       - ./.Docker/secrets:/secrets
       - ./.Docker/home:/home/beach
