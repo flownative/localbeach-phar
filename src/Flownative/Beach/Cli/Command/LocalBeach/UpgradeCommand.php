@@ -2,16 +2,15 @@
 namespace Flownative\Beach\Cli\Command\LocalBeach;
 
 use Flownative\Beach\Cli\Command\BaseCommand;
-use Neos\Utility\Exception\FilesException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * Stop the local beach docker containers.
+ * Stop, pull and start the local beach docker containers.
  */
-class StopCommand extends BaseCommand
+class UpgradeCommand extends BaseCommand
 {
     /**
      * @return void
@@ -20,7 +19,7 @@ class StopCommand extends BaseCommand
     {
         $this
             ->addOption('config', 'c', InputOption::VALUE_OPTIONAL, 'docker file to use.', '/usr/local/lib/beach-cli/localbeach/docker-compose.yml')
-            ->setName('localbeach:stop');
+            ->setName('localbeach:upgrade');
     }
 
     /**
@@ -34,13 +33,13 @@ class StopCommand extends BaseCommand
 
         $dockerComposeFile = $input->getOption('config');
 
-        $command = 'docker-compose -f ' . escapeshellarg($dockerComposeFile) . ' down';
+        $command = 'docker-compose -f ' . escapeshellarg($dockerComposeFile) . ' stop && docker-compose -f ' . escapeshellarg($dockerComposeFile) . ' pull && docker-compose -f ' . escapeshellarg($dockerComposeFile) . ' up -d';
         system($command, $returnValue);
 
         if ($returnValue === 0) {
-            $io->success('Local Beach stopped!');
+            $io->success('Local Beach was upgraded.');
         } else {
-            $io->error('Local Beach failed to stop!');
+            $io->error('Failed to upgrade Local Beach!');
         }
 
         return null;

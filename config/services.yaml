@@ -24,6 +24,9 @@ services:
     localbeach_stop:
       class: 'Flownative\Beach\Cli\Command\LocalBeach\StopCommand'
 
+    localbeach_upgrade:
+      class: 'Flownative\Beach\Cli\Command\LocalBeach\UpgradeCommand'
+
     localbeach_setup:
       class: 'Flownative\Beach\Cli\Command\LocalBeach\SetupCommand'
 

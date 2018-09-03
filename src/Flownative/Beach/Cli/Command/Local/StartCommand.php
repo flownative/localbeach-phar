@@ -3,8 +3,6 @@ namespace Flownative\Beach\Cli\Command\Local;
 
 use Flownative\Beach\Cli\Command\BaseCommand;
 use Flownative\Beach\Cli\LocalHelper;
-use Neos\Utility\Exception\FilesException;
-use Neos\Utility\Files;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -19,6 +17,7 @@ class StartCommand extends BaseCommand
     {
         $this
             ->setName('local:start')
+            ->addOption('no-pull', '', InputOption::VALUE_NONE, 'Skip pulling new Docker image versions.')
             ->setDescription('Start the Local Beach instance in this directory.');
     }
 
@@ -26,6 +25,7 @@ class StartCommand extends BaseCommand
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int|null
+     * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output): ?int
     {
@@ -42,7 +42,18 @@ class StartCommand extends BaseCommand
 
         LocalHelper::loadLocalBeachEnvironment($projectBasePath);
 
-        exec('docker-compose -f ' . escapeshellarg($localBeachCompose) . ' up -d', $output, $returnValue);
+        if (!$input->getOption('no-pull')) {
+            exec('docker-compose -f ' . escapeshellarg($localBeachCompose) . ' pull', $output, $returnValue);
+            if ($io->getVerbosity() > 32) {
+                $io->listing($output);
+            }
+            if ($returnValue > 0) {
+                $io->error('Something went wrong, check output.');
+                return $returnValue;
+            }
+        }
+
+        exec('docker-compose -f ' . escapeshellarg($localBeachCompose) . ' up --remove-orphans -d', $output, $returnValue);
 
         if ($io->getVerbosity() > 32) {
             $io->listing($output);
@@ -53,7 +64,7 @@ class StartCommand extends BaseCommand
         } else {
             $io->success('You are all set');
 
-            $io->text('Access this instance at:');
+            $io->text('When files have been synced, you can access this instance at:');
             $io->text('http://' . getenv('BEACH_PROJECT_NAME') . '.localbeach.net');
         }
 
