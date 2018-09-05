@@ -27,6 +27,6 @@ deploy:
     GIT_SSH_COMMAND: 'ssh -o PreferredAuthentications=publickey -i ~/.ssh/deploymentkey_rsa -i ~/.ssh/github_deploymentkey_rsa'
   script:
     - build/deploy.sh
-    - curl -d content='<b>Beach CLI ${CI_COMMIT_REF_NAME} has been released.</b>' https://3.basecamp.com/3923521/integrations/${BASECAMP_CHATBOT_TOKEN}/buckets/6162023/chats/851880111/lines
+    - curl -d content="<b>Beach CLI ${CI_COMMIT_REF_NAME} has been released.</b>" https://3.basecamp.com/3923521/integrations/${BASECAMP_CHATBOT_TOKEN}/buckets/6162023/chats/851880111/lines
   only:
     - tags
