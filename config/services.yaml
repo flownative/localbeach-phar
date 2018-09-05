@@ -15,6 +15,18 @@ services:
     local_init:
       class: 'Flownative\Beach\Cli\Command\Local\InitCommand'
 
+    local_start:
+      class: 'Flownative\Beach\Cli\Command\Local\StartCommand'
+
+    local_stop:
+      class: 'Flownative\Beach\Cli\Command\Local\StopCommand'
+
+    local_database_sql:
+      class: 'Flownative\Beach\Cli\Command\Local\Database\SqlCommand'
+
+    local_logs:
+      class: 'Flownative\Beach\Cli\Command\Local\LogsCommand'
+
     localbeach_prepare:
       class: 'Flownative\Beach\Cli\Command\LocalBeach\PrepareCommand'
 
@@ -29,12 +41,3 @@ services:
 
     localbeach_setup:
       class: 'Flownative\Beach\Cli\Command\LocalBeach\SetupCommand'
-
-    local_start:
-      class: 'Flownative\Beach\Cli\Command\Local\StartCommand'
-
-    local_stop:
-      class: 'Flownative\Beach\Cli\Command\Local\StopCommand'
-
-    local_database_sql:
-      class: 'Flownative\Beach\Cli\Command\Local\Database\SqlCommand'

@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class StartCommand extends BaseCommand
+class LogsCommand extends BaseCommand
 {
     /**
      * @return void
@@ -16,9 +16,9 @@ class StartCommand extends BaseCommand
     protected function configure()
     {
         $this
-            ->setName('local:start')
-            ->addOption('no-pull', '', InputOption::VALUE_NONE, 'Skip pulling new Docker image versions.')
-            ->setDescription('Start the Local Beach instance in this directory.');
+            ->setName('local:logs')
+            ->addOption('follow', 'f', InputOption::VALUE_NONE, 'Follow log output')
+            ->setDescription('Fetch the logs of the Local Beach instance container.');
     }
 
     /**
@@ -32,7 +32,6 @@ class StartCommand extends BaseCommand
         $io = new SymfonyStyle($input, $output);
 
         $projectBasePath = LocalHelper::findFlowRootPathStartingFrom(getcwd());
-
         $localBeachCompose = LocalHelper::getLocalBeachDockerCompose($projectBasePath);
 
         if (!file_exists($localBeachCompose)) {
@@ -41,31 +40,10 @@ class StartCommand extends BaseCommand
         }
 
         LocalHelper::loadLocalBeachEnvironment($projectBasePath);
-
-        if (!$input->getOption('no-pull')) {
-            exec('docker-compose -f ' . escapeshellarg($localBeachCompose) . ' pull', $output, $returnValue);
-            if ($io->getVerbosity() > 32) {
-                $io->listing($output);
-            }
-            if ($returnValue > 0) {
-                $io->error('Something went wrong, check output.');
-                return $returnValue;
-            }
-        }
-
-        exec('docker-compose -f ' . escapeshellarg($localBeachCompose) . ' up --remove-orphans -d', $output, $returnValue);
-
-        if ($io->getVerbosity() > 32) {
-            $io->listing($output);
-        }
+        passthru('docker-compose -f ' . escapeshellarg($localBeachCompose) . ' logs ' . ($input->getOption('follow') ? '--follow ': ''), $returnValue);
 
         if ($returnValue > 0) {
             $io->error('Something went wrong, check output.');
-        } else {
-            $io->success('You are all set');
-
-            $io->text('When files have been synced, you can access this instance at:');
-            $io->text('http://' . getenv('BEACH_PROJECT_NAME') . '.localbeach.net');
         }
 
         return $returnValue;

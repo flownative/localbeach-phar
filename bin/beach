@@ -22,5 +22,6 @@ $application->add($container->get('localbeach_upgrade'));
 $application->add($container->get('localbeach_setup'));
 $application->add($container->get('local_start'));
 $application->add($container->get('local_stop'));
+$application->add($container->get('local_logs'));
 $application->add($container->get('local_database_sql'));
 $application->run();
