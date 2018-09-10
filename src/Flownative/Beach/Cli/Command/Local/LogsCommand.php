@@ -32,15 +32,15 @@ class LogsCommand extends BaseCommand
         $io = new SymfonyStyle($input, $output);
 
         $projectBasePath = LocalHelper::findFlowRootPathStartingFrom(getcwd());
-        $localBeachCompose = LocalHelper::getLocalBeachDockerCompose($projectBasePath);
+        $localBeachDockerComposePathAndFilename = LocalHelper::getLocalBeachDockerComposePathAndFilename($projectBasePath);
 
-        if (!file_exists($localBeachCompose)) {
+        if (!file_exists($localBeachDockerComposePathAndFilename)) {
             $io->error('We found a Flow or Neos installation but no Local Beach configuration, please run "beach local:init" to get the initial configuration.');
             return 1;
         }
 
         LocalHelper::loadLocalBeachEnvironment($projectBasePath);
-        passthru('docker-compose -f ' . escapeshellarg($localBeachCompose) . ' logs ' . ($input->getOption('follow') ? '--follow ': ''), $returnValue);
+        passthru('docker-compose -f ' . escapeshellarg($localBeachDockerComposePathAndFilename) . ' logs ' . ($input->getOption('follow') ? '--follow ': ''), $returnValue);
 
         if ($returnValue > 0) {
             $io->error('Something went wrong, check output.');

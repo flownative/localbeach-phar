@@ -35,6 +35,7 @@ Nginx, PHP and Redis which later be used in the cloud.
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int|null
+     * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output): ?int
     {
@@ -45,14 +46,14 @@ Nginx, PHP and Redis which later be used in the cloud.
         $projectName = $input->getOption('projectName') ?: basename($projectBasePath);
         $projectName = preg_replace('/[^a-zA-Z0-9-]/', '', $projectName);
 
-        $localBeachCompose = LocalHelper::getLocalBeachDockerCompose($projectBasePath);
+        $localBeachDockerComposePathAndFilename = LocalHelper::getLocalBeachDockerComposePathAndFilename($projectBasePath);
         $localBeachDistributionEnvironment = LocalHelper::getLocalBeachDistributionEnvironmentFilePath($projectBasePath);
 
-        if (!file_exists($localBeachCompose) || $input->getOption('force')) {
-            copy(CLI_ROOT_PATH . 'resources/docker-compose.yml', $localBeachCompose);
+        if (!file_exists($localBeachDockerComposePathAndFilename) || $input->getOption('force')) {
+            copy(CLI_ROOT_PATH . 'resources/docker-compose.yml', $localBeachDockerComposePathAndFilename);
         } else {
-            $io->error($localBeachCompose . ' already exists');
-            $io->text('This command would create a new ' . basename($localBeachCompose) . ', please use --force to overwrite the existing file.');
+            $io->error($localBeachDockerComposePathAndFilename . ' already exists');
+            $io->text('This command would create a new ' . basename($localBeachDockerComposePathAndFilename) . ', please use --force to overwrite the existing file.');
         }
 
         try {

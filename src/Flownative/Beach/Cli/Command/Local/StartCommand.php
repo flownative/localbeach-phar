@@ -33,9 +33,9 @@ class StartCommand extends BaseCommand
 
         $projectBasePath = LocalHelper::findFlowRootPathStartingFrom(getcwd());
 
-        $localBeachCompose = LocalHelper::getLocalBeachDockerCompose($projectBasePath);
+        $localBeachDockerComposePathAndFilename = LocalHelper::getLocalBeachDockerComposePathAndFilename($projectBasePath);
 
-        if (!file_exists($localBeachCompose)) {
+        if (!file_exists($localBeachDockerComposePathAndFilename)) {
             $io->error('We found a Flow or Neos installation but no Local Beach configuration, please run "beach local:init" to get the initial configuration.');
             return 1;
         }
@@ -43,7 +43,7 @@ class StartCommand extends BaseCommand
         LocalHelper::loadLocalBeachEnvironment($projectBasePath);
 
         if (!$input->getOption('no-pull')) {
-            exec('docker-compose -f ' . escapeshellarg($localBeachCompose) . ' pull', $output, $returnValue);
+            exec('docker-compose -f ' . escapeshellarg($localBeachDockerComposePathAndFilename) . ' pull', $output, $returnValue);
             if ($io->getVerbosity() > 32) {
                 $io->listing($output);
             }
@@ -53,7 +53,7 @@ class StartCommand extends BaseCommand
             }
         }
 
-        exec('docker-compose -f ' . escapeshellarg($localBeachCompose) . ' up --remove-orphans -d', $output, $returnValue);
+        exec('docker-compose -f ' . escapeshellarg($localBeachDockerComposePathAndFilename) . ' up --remove-orphans -d', $output, $returnValue);
 
         if ($io->getVerbosity() > 32) {
             $io->listing($output);

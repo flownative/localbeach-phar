@@ -26,23 +26,22 @@ class StopCommand extends BaseCommand
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int|null
+     * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output): ?int
     {
         $io = new SymfonyStyle($input, $output);
-
         $projectBasePath = LocalHelper::findFlowRootPathStartingFrom(getcwd());
+        $localBeachDockerComposePathAndFilename = LocalHelper::getLocalBeachDockerComposePathAndFilename($projectBasePath);
 
-        $localBeachCompose = LocalHelper::getLocalBeachDockerCompose($projectBasePath);
-
-        if (!file_exists($localBeachCompose)) {
+        if (!file_exists($localBeachDockerComposePathAndFilename)) {
             $io->error('We found a Flow or Neos installation but no Local Beach configuration, please run "beach local:init" to get the intial configuration.');
             return 1;
         }
 
         LocalHelper::loadLocalBeachEnvironment($projectBasePath);
 
-        exec('docker-compose -f ' . escapeshellarg($localBeachCompose) . ' stop', $output, $returnValue);
+        exec('docker-compose -f ' . escapeshellarg($localBeachDockerComposePathAndFilename) . ' stop', $output, $returnValue);
 
         if ($io->getVerbosity() > 32) {
             $io->listing($output);

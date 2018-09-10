@@ -43,9 +43,9 @@ abstract class LocalHelper
      * @param string $projectPath
      * @return string
      */
-    public static function getLocalBeachDockerCompose($projectPath)
+    public static function getLocalBeachDockerComposePathAndFilename($projectPath)
     {
-        return Files::getNormalizedPath($projectPath) . 'localbeach-docker-compose.yaml';
+        return Files::getNormalizedPath($projectPath) . '.localbeach.docker-compose.yaml';
     }
 
     /**
