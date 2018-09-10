@@ -34,8 +34,8 @@ services:
       - ./Data/Logs:/application/Data/Logs:delegated
       - ./Data/DoctrineMigrations:/application/Data/DoctrineMigrations
       - .:/application-on-host:delegated
-      - ./.Docker/secrets:/secrets
-      - ./.Docker/home:/home/beach
+      - ./.LocalBeach/secrets:/secrets
+      - ./.LocalBeach/home:/home/beach
       - ./Web:/application/Web:delegated
     environment:
       - BEACH_PHP_FPM_ENABLE=true

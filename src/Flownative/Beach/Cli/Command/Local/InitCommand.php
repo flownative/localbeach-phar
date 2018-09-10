@@ -75,6 +75,12 @@ Nginx, PHP and Redis which later be used in the cloud.
             $io->text('This command would create a new ' . basename($localBeachDistributionEnvironment) . ' file, please use --force to overwrite the existing file.');
         }
 
+        try {
+            Files::createDirectoryRecursively(LocalHelper::getLocalBeachFolderPath($projectBasePath));
+            file_put_contents(LocalHelper::getLocalBeachFolderPath($projectBasePath) . '.gitignore', "*\n");
+        } catch (FilesException $e) {
+        }
+
         if ($input->getOption('createDatabase')) {
             exec('docker exec local_beach_database /bin/bash -c "echo \'CREATE DATABASE IF NOT EXISTS \`' . $projectName . '\`\' | mysql -u root --password=password"');
         }

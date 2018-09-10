@@ -34,7 +34,7 @@ abstract class LocalHelper
      * @param string $projectPath
      * @return string
      */
-    public static function getLocalBeachFolder($projectPath)
+    public static function getLocalBeachFolderPath($projectPath)
     {
         return Files::getNormalizedPath($projectPath) . '.LocalBeach/';
     }
