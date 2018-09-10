@@ -33,7 +33,7 @@ class StopCommand extends BaseCommand
 
         $dockerComposeFile = $input->getOption('config');
 
-        $command = 'docker-compose -f ' . escapeshellarg($dockerComposeFile) . ' down';
+        $command = 'docker-compose -f ' . escapeshellarg($dockerComposeFile) . ' rm --force --stop -v';
         system($command, $returnValue);
 
         if ($returnValue === 0) {

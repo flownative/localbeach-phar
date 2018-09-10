@@ -34,6 +34,9 @@ class StartCommand extends BaseCommand
 
         $dockerComposeFile = $input->getOption('config');
 
+        $command = 'docker-compose  -f ' . escapeshellarg($dockerComposeFile) . ' rm --force --stop -v > /dev/null 2>&1 ';
+        system($command, $returnValue);
+
         $command = 'docker-compose -f ' . escapeshellarg($dockerComposeFile) . ' up -d';
         system($command, $returnValue);
 
