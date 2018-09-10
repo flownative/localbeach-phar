@@ -1,6 +1,11 @@
 #!/usr/bin/env php
 <?php
 
+if (version_compare(PHP_VERSION, '7.1.0', '<')) {
+    echo "Beach CLI requires at least PHP 7.1, but you currently have " . PHP_VERSION . " installed.\n";
+    exit(1);
+}
+
 require __DIR__.'/../vendor/autoload.php';
 
 use Symfony\Component\Config\FileLocator;
