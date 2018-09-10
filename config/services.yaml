@@ -21,11 +21,17 @@ services:
     local_stop:
       class: 'Flownative\Beach\Cli\Command\Local\StopCommand'
 
+    local_down:
+      class: 'Flownative\Beach\Cli\Command\Local\DownCommand'
+
     local_database_sql:
       class: 'Flownative\Beach\Cli\Command\Local\Database\SqlCommand'
 
     local_logs:
       class: 'Flownative\Beach\Cli\Command\Local\LogsCommand'
+
+    local_status:
+      class: 'Flownative\Beach\Cli\Command\Local\StatusCommand'
 
     localbeach_prepare:
       class: 'Flownative\Beach\Cli\Command\LocalBeach\PrepareCommand'

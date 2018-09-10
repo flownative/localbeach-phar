@@ -7,7 +7,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class StopCommand extends BaseCommand
+class StatusCommand extends BaseCommand
 {
     /**
      * @return void
@@ -15,8 +15,8 @@ class StopCommand extends BaseCommand
     protected function configure()
     {
         $this
-            ->setName('local:stop')
-            ->setDescription('Stop the Local Beach instance in this directory.');
+            ->setName('local:status')
+            ->setDescription('Show status of the Local Beach instance container.');
     }
 
     /**
@@ -28,6 +28,7 @@ class StopCommand extends BaseCommand
     protected function execute(InputInterface $input, OutputInterface $output): ?int
     {
         $io = new SymfonyStyle($input, $output);
+
         $projectBasePath = LocalHelper::findFlowRootPathStartingFrom(getcwd());
         $localBeachDockerComposePathAndFilename = LocalHelper::getLocalBeachDockerComposePathAndFilename($projectBasePath);
 
@@ -37,17 +38,10 @@ class StopCommand extends BaseCommand
         }
 
         LocalHelper::loadLocalBeachEnvironment($projectBasePath);
-
-        exec('docker-compose -f ' . escapeshellarg($localBeachDockerComposePathAndFilename) . ' stop', $output, $returnValue);
-
-        if ($io->getVerbosity() > 32) {
-            $io->listing($output);
-        }
+        passthru('docker-compose -f ' . escapeshellarg($localBeachDockerComposePathAndFilename) . ' ps ', $returnValue);
 
         if ($returnValue > 0) {
             $io->error('Something went wrong, check output.');
-        } else {
-            $io->success('Local instance shut down.');
         }
 
         return $returnValue;

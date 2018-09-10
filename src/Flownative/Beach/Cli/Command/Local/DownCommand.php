@@ -7,7 +7,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class StopCommand extends BaseCommand
+class DownCommand extends BaseCommand
 {
     /**
      * @return void
@@ -15,8 +15,8 @@ class StopCommand extends BaseCommand
     protected function configure()
     {
         $this
-            ->setName('local:stop')
-            ->setDescription('Stop the Local Beach instance in this directory.');
+            ->setName('local:down')
+            ->setDescription('Stop the Local Beach instance in this directory and remove its containers and volume.');
     }
 
     /**
@@ -38,7 +38,7 @@ class StopCommand extends BaseCommand
 
         LocalHelper::loadLocalBeachEnvironment($projectBasePath);
 
-        exec('docker-compose -f ' . escapeshellarg($localBeachDockerComposePathAndFilename) . ' stop', $output, $returnValue);
+        exec('docker-compose -f ' . escapeshellarg($localBeachDockerComposePathAndFilename) . ' down --remove-orphans --volumes', $output, $returnValue);
 
         if ($io->getVerbosity() > 32) {
             $io->listing($output);
