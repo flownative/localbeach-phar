@@ -2,6 +2,7 @@
 namespace Flownative\Beach\Cli\Command\LocalBeach;
 
 use Flownative\Beach\Cli\Command\BaseCommand;
+use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -31,31 +32,31 @@ class SetupCommand extends BaseCommand
 
         $environment = getenv('BEACH_REMOTE_AUTHORIZED_KEYS') ?? null;
         if ($environment) {
-            $io->success('Environment variable already set, doing nothing.');
+            $io->success('Environment variable "BEACH_REMOTE_AUTHORIZED_KEYS" already set, doing nothing.');
             return 0;
         }
 
         $shell = $this->detectShell();
         $homeDirectory = $this->detectHomeDirectory();
 
-        if ($shell === 'zsh') {
-            $io->text('Detected ZSH. Installing environment');
-            $this->writeEnvironment($homeDirectory . '/.zshrc');
-            $io->success('Done');
-            return 0;
+        switch ($shell) {
+            case 'zsh':
+                $profilePathAndFilename = $homeDirectory . '/.zshrc';
+            break;
+            case 'bash':
+                $profilePathAndFilename = $homeDirectory . '/.bashrc';
+            break;
+            default:
+                $io->warning('Could not detect shell, please include the following to your shell environment:');
+                $io->text($this->getEnvironmentLine());
+                return 1;
         }
 
-        if ($shell === 'bash') {
-            $io->text('Detected BASH. Installing environment');
-            $this->writeEnvironment($homeDirectory . '/.bashrc');
-            $io->success('Done');
-            return 0;
-        }
 
-        $io->warning('Could not detect shell, please include the following to your shell environment:');
-        $io->text($this->getEnvironmentLine());
-
-        return 1;
+        $io->text('Installing environment variables in ' . $profilePathAndFilename);
+        $this->writeEnvironment($profilePathAndFilename);
+        $io->success('Please run "source ' . $profilePathAndFilename . '" or start a new shell.');
+        return 0;
     }
 
     /**
@@ -102,7 +103,17 @@ class SetupCommand extends BaseCommand
      */
     protected function writeEnvironment(string $filename)
     {
-        file_put_contents($filename, PHP_EOL . $this->getEnvironmentLine(), FILE_APPEND | LOCK_EX);
+        if (!is_readable($filename)) {
+            throw new RuntimeException("The file $filename was not found. Please create it manually and add the following line:\n" . $this->getEnvironmentLine(), 1536585747);
+        }
+        if (!is_writable($filename)) {
+            throw new RuntimeException("The file $filename is not writable. Please add the following line manually:\n" . $this->getEnvironmentLine(), 1536585847);
+        }
+
+        $existingContent = file_get_contents($filename);
+        if (strpos($existingContent, $this->getEnvironmentLine()) === false) {
+            file_put_contents($filename, PHP_EOL . $this->getEnvironmentLine(), FILE_APPEND | LOCK_EX);
+        }
     }
 
     /**
