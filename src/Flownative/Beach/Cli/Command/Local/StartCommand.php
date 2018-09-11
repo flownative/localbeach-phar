@@ -18,7 +18,8 @@ class StartCommand extends BaseCommand
         $this
             ->setName('local:start')
             ->addOption('no-pull', '', InputOption::VALUE_NONE, 'Skip pulling new Docker image versions.')
-            ->setDescription('Start the Local Beach instance in this directory.');
+            ->setDescription('Start the Local Beach instance in this directory.')
+            ->setAliases(['local:up']);
     }
 
     /**

@@ -29,6 +29,9 @@ services:
       - local_beach
     ports:
       - "${BEACH_SSH_PORT:-2222}:22"
+    depends_on:
+      - webserver
+      - redis
     volumes:
       - ./Data/Persistent:/application/Data/Persistent:delegated
       - ./Data/Logs:/application/Data/Logs:delegated
@@ -54,6 +57,7 @@ services:
       - BEACH_REDIS_PASSWORD=${BEACH_REDIS_PASSWORD:-password}
       - BEACH_PHP_MEMORY_LIMIT=${BEACH_PHP_MEMORY_LIMIT:-750M}
       - BEACH_SYNCD_ENABLE=true
+      - BEACH_APPLICATION_USER_SERVICE_ENABLE=false
 
   redis:
     image: ${BEACH_REDIS_IMAGE:-flownative/beach-redis}:${BEACH_REDIS_IMAGE_VERSION:-latest}
