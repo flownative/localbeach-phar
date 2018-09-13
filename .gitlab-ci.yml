@@ -3,11 +3,11 @@ services:
 
 stages:
 - build
-- deploy
+- release
 
 build:
   stage: build
-  image: eu.gcr.io/flownative-beach/beach-phpfpm-did:7.2.5-2
+  image: eu.gcr.io/flownative-beach/beach-phpfpm-did:latest
   variables:
     GIT_SSH_COMMAND: 'ssh -o PreferredAuthentications=publickey -i ~/.ssh/deploymentkey_rsa'
   script:
@@ -20,13 +20,13 @@ build:
     - master
     - tags
 
-deploy:
-  stage: deploy
-  image: eu.gcr.io/flownative-beach/beach-phpfpm-did:7.2.5-2
+release:
+  stage: release
+  image: eu.gcr.io/flownative-beach/beach-phpfpm-did:latest
   variables:
     GIT_SSH_COMMAND: 'ssh -o PreferredAuthentications=publickey -i ~/.ssh/deploymentkey_rsa -i ~/.ssh/github_deploymentkey_rsa'
   script:
-    - build/deploy.sh
+    - build/release.sh
     - curl -d content="<b>Beach CLI ${CI_COMMIT_REF_NAME} has been released.</b>" https://3.basecamp.com/3923521/integrations/${BASECAMP_CHATBOT_TOKEN}/buckets/6162023/chats/851880111/lines
   only:
     - tags
