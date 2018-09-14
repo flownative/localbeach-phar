@@ -2,7 +2,6 @@
 namespace Flownative\Beach\Cli\Command\LocalBeach;
 
 use Flownative\Beach\Cli\Command\BaseCommand;
-use Neos\Utility\Exception\FilesException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;

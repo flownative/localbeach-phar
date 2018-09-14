@@ -24,6 +24,9 @@ services:
     local_down:
       class: 'Flownative\Beach\Cli\Command\Local\DownCommand'
 
+    local_ssh:
+      class: 'Flownative\Beach\Cli\Command\Local\SshCommand'
+
     local_database_sql:
       class: 'Flownative\Beach\Cli\Command\Local\Database\SqlCommand'
 

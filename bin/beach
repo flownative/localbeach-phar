@@ -28,6 +28,7 @@ $application->add($container->get('localbeach_setup'));
 $application->add($container->get('local_start'));
 $application->add($container->get('local_stop'));
 $application->add($container->get('local_down'));
+$application->add($container->get('local_ssh'));
 $application->add($container->get('local_logs'));
 $application->add($container->get('local_status'));
 $application->add($container->get('local_database_sql'));
