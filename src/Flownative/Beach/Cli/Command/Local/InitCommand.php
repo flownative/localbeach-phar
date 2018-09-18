@@ -85,7 +85,7 @@ Nginx, PHP and Redis which later be used in the cloud.
             exec('docker exec local_beach_database /bin/bash -c "echo \'CREATE DATABASE IF NOT EXISTS \`' . $projectName . '\`\' | mysql -u root --password=password"');
         }
 
-        $io->success('You are all set, now run beach local:start to get started.');
+        $io->success('Maybe change settings in .localbeach-dist.env and then run beach local:start to get started.');
 
         return null;
     }
