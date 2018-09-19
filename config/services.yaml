@@ -12,6 +12,11 @@ services:
       calls:
         - [setConfig, ['@configuration']]
 
+    resources_upload:
+      class: 'Flownative\Beach\Cli\Command\Resources\UploadCommand'
+      calls:
+        - [setConfig, ['@configuration']]
+
     local_init:
       class: 'Flownative\Beach\Cli\Command\Local\InitCommand'
 
