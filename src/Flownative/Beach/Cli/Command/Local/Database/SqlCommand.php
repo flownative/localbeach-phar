@@ -3,8 +3,6 @@ namespace Flownative\Beach\Cli\Command\Local\Database;
 
 use Flownative\Beach\Cli\Command\BaseCommand;
 use Flownative\Beach\Cli\LocalHelper;
-use Neos\Utility\Exception\FilesException;
-use Neos\Utility\Files;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -19,7 +17,7 @@ class SqlCommand extends BaseCommand
     {
         $this
             ->setName('local:database:sql')
-            ->setDescription('Sent SQL commands to this projects database.')
+            ->setDescription('Send SQL commands to this projects database.')
             ->setHelp(
                 ""
             )
@@ -35,7 +33,12 @@ class SqlCommand extends BaseCommand
     {
         $io = new SymfonyStyle($input, $output);
 
-        $projectBasePath = LocalHelper::findFlowRootPathStartingFrom(getcwd());
+        try {
+            $projectBasePath = LocalHelper::findFlowRootPathStartingFrom(getcwd());
+        } catch (\Exception $exception) {
+            $io->error(sprintf('Could not find Flow root path starting from %s.', getcwd()));
+            return 1;
+        }
         LocalHelper::loadLocalBeachEnvironment($projectBasePath);
 
         $filename = $input->getArgument('filename');
@@ -43,8 +46,12 @@ class SqlCommand extends BaseCommand
             $filename = 'php://stdin';
         }
 
-        $handle = fopen($filename, 'r');
+        if (empty($filename)) {
+            $io->error(sprintf('No filename given.'));
+            return 1;
+        }
 
+        $handle = fopen($filename, 'r');
         $descriptorspec = [$handle, ["pipe", "w"]];
 
         $sshCommand = 'ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p ' . getenv('BEACH_SSH_PORT') . '  beach@' . getenv('BEACH_PROJECT_NAME') . '.localbeach.net';
