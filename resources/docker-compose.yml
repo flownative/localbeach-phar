@@ -16,7 +16,7 @@ services:
     volumes:
       - .:/application:delegated
     environment:
-      - VIRTUAL_HOST=${BEACH_PROJECT_NAME}.localbeach.net
+      - VIRTUAL_HOST=${BEACH_VIRTUAL_HOSTS:?Please specify Beach virtual hosts as BEACH_VIRTUAL_HOSTS}
       - BEACH_PHP_FPM_HOST=${BEACH_PROJECT_NAME:?Please specify a Beach project name as BEACH_PROJECT_NAME}_php.local_beach
       - BEACH_FLOW_BASE_CONTEXT=${BEACH_FLOW_BASE_CONTEXT:-Development}
       - BEACH_FLOW_SUB_CONTEXT=${BEACH_FLOW_SUB_CONTEXT:-Instance}
