@@ -17,9 +17,9 @@ abstract class LocalHelper
     public static function findFlowRootPathStartingFrom($currentPath)
     {
         $projectBasePath = Files::getNormalizedPath($currentPath);
-        $flowCommand = $projectBasePath . 'flow';
+        $dockerComposeYaml = $projectBasePath . '.localbeach.docker-compose.yaml';
 
-        if (file_exists($flowCommand)) {
+        if (file_exists($dockerComposeYaml)) {
             return $projectBasePath;
         }
 
