@@ -58,6 +58,7 @@ services:
       - BEACH_PHP_MEMORY_LIMIT=${BEACH_PHP_MEMORY_LIMIT:-750M}
       - BEACH_SYNCD_ENABLE=true
       - BEACH_APPLICATION_USER_SERVICE_ENABLE=false
+      - BEACH_PHP_TIMEZONE=${BEACH_PHP_TIMEZONE:-UTC}
 
   redis:
     image: ${BEACH_REDIS_IMAGE:-flownative/beach-redis}:${BEACH_REDIS_IMAGE_VERSION:-latest}
