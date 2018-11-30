@@ -1,5 +1,5 @@
 services:
-  - docker:dind
+- docker:dind
 
 stages:
 - build
@@ -7,26 +7,25 @@ stages:
 
 build:
   stage: build
-  image: eu.gcr.io/flownative-beach/beach-phpfpm-did:latest
+  image: registry.gitlab.com/flownative/docker/beach-phpfpm-did:7.2
   variables:
     GIT_SSH_COMMAND: 'ssh -o PreferredAuthentications=publickey -i ~/.ssh/deploymentkey_rsa'
   script:
-    - build/build.sh
+  - build/build.sh
   artifacts:
     paths:
-      - beach.phar
+    - beach.phar
     expire_in: '1 hour'
   only:
-    - master
-    - tags
+  - master
+  - tags
 
 release:
   stage: release
-  image: eu.gcr.io/flownative-beach/beach-phpfpm-did:latest
+  image: registry.gitlab.com/flownative/docker/beach-phpfpm-did:7.2
   variables:
     GIT_SSH_COMMAND: 'ssh -o PreferredAuthentications=publickey -i ~/.ssh/deploymentkey_rsa -i ~/.ssh/github_deploymentkey_rsa'
   script:
-    - build/release.sh
-    - curl -d content="<b>Beach CLI ${CI_COMMIT_REF_NAME} has been released.</b>" https://3.basecamp.com/3923521/integrations/${BASECAMP_CHATBOT_TOKEN}/buckets/6162023/chats/851880111/lines
+  - build/release.sh
   only:
-    - tags
+  - tags
