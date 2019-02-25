@@ -94,12 +94,18 @@ Note: Existing data in the local project instance will be left unchanged.
             $environmentVariables[$key] = $value;
         }
 
-        if (!isset($environmentVariables['BEACH_GOOGLE_CLOUD_STORAGE_STORAGE_BUCKET'])) {
+        $bucketName = '';
+        if (isset($environmentVariables['BEACH_GOOGLE_CLOUD_STORAGE_STORAGE_BUCKET'])) {
+            $bucketName = $environmentVariables['BEACH_GOOGLE_CLOUD_STORAGE_STORAGE_BUCKET'];
+        } elseif (isset($environmentVariables['BEACH_GOOGLE_CLOUD_STORAGE_PUBLIC_BUCKET'])) {
+            $bucketName = $environmentVariables['BEACH_GOOGLE_CLOUD_STORAGE_PUBLIC_BUCKET'];
+        }
+
+        if (empty($bucketName)) {
             $io->error('Could not retrieve cloud storage information from instance.');
             return 1;
         }
 
-        $bucketName = $environmentVariables['BEACH_GOOGLE_CLOUD_STORAGE_STORAGE_BUCKET'];
         $privateKey = json_decode(base64_decode($environmentVariables['BEACH_GOOGLE_CLOUD_STORAGE_SERVICE_ACCOUNT_PRIVATE_KEY']), true);
 
         $googleCloud = new ServiceBuilder([
