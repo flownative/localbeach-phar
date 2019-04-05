@@ -62,6 +62,17 @@ class StartCommand extends BaseCommand
 
         if ($returnValue > 0) {
             $io->error('Something went wrong, check output.');
+            return $returnValue;
+        }
+
+        exec('docker exec local_beach_database /bin/bash -c "echo \'CREATE DATABASE IF NOT EXISTS \`' . getenv('BEACH_PROJECT_NAME') . '\`\' | mysql -u root --password=password"');
+
+        if ($io->getVerbosity() > 32) {
+            $io->listing($output);
+        }
+
+        if ($returnValue > 0) {
+            $io->error('Something went wrong, check output.');
         } else {
             $io->success('You are all set');
 
