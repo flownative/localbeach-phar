@@ -2,7 +2,6 @@
 namespace Flownative\Beach\Cli\Command\Resources;
 
 use Flownative\Beach\Cli\Command\BaseCommand;
-use Flownative\Beach\Cli\Service\ConfigurationService;
 use Google\Cloud\Core\ServiceBuilder;
 use Neos\Utility\Exception\FilesException;
 use Neos\Utility\Files;
@@ -13,20 +12,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class UploadCommand extends BaseCommand
 {
-    /**
-     * @var ConfigurationService
-     */
-    protected $configurationService;
-
-    /**
-     * @required
-     * @param ConfigurationService $cliConfig
-     */
-    public function setConfig(ConfigurationService $cliConfig)
-    {
-        $this->configurationService = $cliConfig;
-    }
-
     /**
      * @return void
      */
