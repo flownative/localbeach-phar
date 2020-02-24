@@ -1,9 +1,6 @@
 <?php
 namespace Flownative\Beach\Cli\Command\Resources;
 
-use Flownative\Beach\Cli\Command\BaseCommand;
-use Flownative\Beach\Cli\Service\ConfigurationService;
-use Google\Cloud\Core\ServiceBuilder;
 use Google\Cloud\Storage\StorageObject;
 use Neos\Utility\Exception\FilesException;
 use Neos\Utility\Files;
@@ -15,20 +12,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class DownloadCommand extends BaseCommand
 {
     /**
-     * @var ConfigurationService
-     */
-    protected $configurationService;
-
-    /**
-     * @required
-     * @param ConfigurationService $cliConfig
-     */
-    public function setConfig(ConfigurationService $cliConfig)
-    {
-        $this->configurationService = $cliConfig;
-    }
-
-    /**
      * @return void
      */
     protected function configure()
@@ -37,7 +20,7 @@ class DownloadCommand extends BaseCommand
             ->setName('resource:download')
             ->setDescription('Download resources (assets) from Beach to a local Flow or Neos installation')
             ->setHelp(
-"The <info>resource:download</info> command downloads Flow resources from a Beach instance to
+'The <info>resource:download</info> command downloads Flow resources from a Beach instance to
 a local Flow or Neos project.
 
 Resource data (that is, the actual files containing binary data) will be downloaded to the
@@ -51,7 +34,7 @@ Use this command by switching to the root directory of your Flow or Neos install
 then running <info>resource:download</info> and specify the instance identifier.
 
 Note: Existing data in the local project instance will be left unchanged.
-"
+'
             )
             ->addOption('instance', 'i', InputOption::VALUE_REQUIRED, 'Instance identifier, e.g. "instance-123abcde-456-abcd-1234-abcdef012345"');
     }
@@ -73,52 +56,20 @@ Note: Existing data in the local project instance will be left unchanged.
             return 1;
         }
         $localResourcesPath = $localPersistentPath . 'Resources/';
-        if (!file_exists($localResourcesPath)) {
-            mkdir($localResourcesPath);
-        }
-
-        $instanceIdentifier = $input->getOption('instance');
-        if (preg_match('/^instance\-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/', $instanceIdentifier) === 0) {
-            $io->error(sprintf('The instance identifier is not valid.', $instanceIdentifier));
+        if (!file_exists($localResourcesPath) && !mkdir($localResourcesPath) && !is_dir($localResourcesPath)) {
+            $io->error(sprintf('Directory "%s" was not created', $localResourcesPath));
             return 1;
         }
 
-        $io->text('Retrieving cloud storage access data from instance ...');
-        $io->newLine();
-
-        $environmentVariables = [];
-        exec('ssh -J beach@ssh.flownative.cloud beach@' . $instanceIdentifier . '.beach /bin/bash -c "env | grep BEACH_GOOGLE_CLOUD_STORAGE_"', $environmentLines);
-
-        foreach ($environmentLines as $line) {
-            [$key, $value] = explode('=', $line);
-            $environmentVariables[$key] = $value;
-        }
-
-        $bucketName = '';
-        if (isset($environmentVariables['BEACH_GOOGLE_CLOUD_STORAGE_STORAGE_BUCKET'])) {
-            $bucketName = $environmentVariables['BEACH_GOOGLE_CLOUD_STORAGE_STORAGE_BUCKET'];
-        } elseif (isset($environmentVariables['BEACH_GOOGLE_CLOUD_STORAGE_PUBLIC_BUCKET'])) {
-            $bucketName = $environmentVariables['BEACH_GOOGLE_CLOUD_STORAGE_PUBLIC_BUCKET'];
-        }
-
-        if (empty($bucketName)) {
-            $io->error('Could not retrieve cloud storage information from instance.');
+        $bucket = $this->determineStorageBucketForInstance($input->getOption('instance'), $io);
+        if ($bucket === null) {
             return 1;
         }
-
-        $privateKey = json_decode(base64_decode($environmentVariables['BEACH_GOOGLE_CLOUD_STORAGE_SERVICE_ACCOUNT_PRIVATE_KEY']), true);
-
-        $googleCloud = new ServiceBuilder([
-            'keyFile' => $privateKey
-        ]);
-
-        $googleCloudStorage = $googleCloud->storage();
-        $bucket = $googleCloudStorage->bucket($bucketName);
 
         $io->text([
-            "Downloading resources from bucket",
-            "<info>$bucketName</info>",
-            "to local directory",
+            'Downloading resources from bucket',
+            '<info>' . $bucket->name() . '</info>',
+            'to local directory',
             "<info>$localResourcesPath</info>"
         ]);
         $io->newLine();
