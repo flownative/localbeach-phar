@@ -88,7 +88,7 @@ Note: Existing data in the Beach instance will be left unchanged.
         $io->newLine();
 
         $environmentVariables = [];
-        exec('ssh -J beach@ssh.flownative.cloud beach@' . $instanceIdentifier . ' /bin/bash -c "env | grep BEACH_GOOGLE_CLOUD_STORAGE_"', $environmentLines);
+        exec('ssh -J beach@ssh.flownative.cloud beach@' . $instanceIdentifier . '.beach /bin/bash -c "env | grep BEACH_GOOGLE_CLOUD_STORAGE_"', $environmentLines);
 
         foreach ($environmentLines as $line) {
             list($key, $value) = explode("=", $line);
